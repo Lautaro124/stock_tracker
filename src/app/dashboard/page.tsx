@@ -11,20 +11,20 @@ export const metadata: Metadata = {
 };
 
 interface DashboardPageProps {
-  searchParams: {
+  searchParams: Promise<{
     projectId?: string;
-  };
+  }>;
 }
 
 export default async function DashboardPage({
   searchParams,
 }: DashboardPageProps) {
-  const projectId = searchParams.projectId
-    ? parseInt(searchParams.projectId)
+  const projectId = (await searchParams).projectId
+    ? parseInt((await searchParams).projectId ?? "0")
     : 0;
   const selectedProject = await getCurrentProject(projectId);
 
-  if (!selectedProject && projectId) {
+  if (!selectedProject) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950 p-4">
         <div className="max-w-7xl mx-auto">
@@ -33,15 +33,21 @@ export default async function DashboardPage({
             <p className="text-sm text-gray-600 dark:text-gray-400">
               El proyecto que estás buscando no existe o no tienes acceso a él.
             </p>
+            <div className="mt-4">
+              <Link
+                href="/projects"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+              >
+                Volver a Proyectos
+              </Link>
+            </div>
           </header>
         </div>
       </div>
     );
   }
 
-  const stockItems = selectedProject
-    ? await getStockItems(selectedProject.id)
-    : [];
+  const stockItems = await getStockItems(selectedProject.id);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 p-4">

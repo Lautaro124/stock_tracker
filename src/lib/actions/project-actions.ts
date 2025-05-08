@@ -32,37 +32,58 @@ export async function getUserProjects() {
   }
 
   // Extraer proyectos únicos de los permisos
-  const projects = permissions?.map((p) => p.Projects as unknown as Project) || [];
+  const projects =
+    permissions?.map((p) => p.Projects as unknown as Project) || [];
 
   return { projects };
 }
 
-export const getCurrentProject = async (projectId: number): Promise<Project> => {
-  const supabase = await createClient();
-  const {data : { user }} = await supabase.auth.getUser();
-  const { data: project, error } = await supabase
-    .from("Projects")
-    .select("*")
-    .eq("id", projectId)
-    .single();
-  if (error) {
-    throw { error: error.message };
-  }
+export const getCurrentProject = async (
+  projectId: number
+): Promise<Project | null> => {
+  if (!projectId) return null;
 
-  if (project) {
-    const { data: permissions, error: permissionError } = await supabase
-      .from("Projects_permisions")
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  try {
+    const { data: project, error } = await supabase
+      .from("Projects")
       .select("*")
-      .eq("project_id", projectId)
-      .eq("user_id", user?.id)
+      .eq("id", projectId)
       .single();
 
-    if (permissionError && !permissions) {
-      throw { error: permissionError.message };
+    if (error) {
+      console.error("Error al obtener el proyecto:", error.message);
+      return null;
     }
-  }
 
-  return project;
+    if (project) {
+      try {
+        const { data: permissions } = await supabase
+          .from("Projects_permisions")
+          .select("*")
+          .eq("project_id", projectId)
+          .eq("user_id", user?.id)
+          .single();
+
+        if (!permissions) {
+          console.error("El usuario no tiene permisos para este proyecto");
+          return null;
+        }
+      } catch (error) {
+        console.error("Error al verificar permisos:", error);
+        return null;
+      }
+    }
+
+    return project;
+  } catch (error) {
+    console.error("Error al obtener el proyecto:", error);
+    return null;
+  }
 };
 
 // Crear un nuevo proyecto
