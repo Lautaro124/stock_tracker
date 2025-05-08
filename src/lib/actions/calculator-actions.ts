@@ -1,6 +1,11 @@
 "use server";
 
-import { CalculatorInput, CalculatorResult } from "@/interface/calculator";
+import {
+  CalculatorInput,
+  CalculatorResult,
+  KwCalculatorInput,
+  KwCalculatorResult,
+} from "@/interface/calculator";
 
 /**
  * Calcula el presupuesto para una pieza impresa en 3D
@@ -82,5 +87,85 @@ export async function getDefaultCalculatorValues(): Promise<CalculatorInput> {
     machineCostPerHour: 350, // ARS/h
     additionalCosts: 0,
     profitMargin: 30,
+  };
+}
+
+/**
+ * Calcula el consumo de kW y los costos para impresoras 3D
+ * @param input Parámetros de entrada para el cálculo de kW
+ * @returns Objeto con resultados detallados del consumo y costos
+ */
+export async function calculateKwConsumption(
+  input: KwCalculatorInput
+): Promise<KwCalculatorResult> {
+  // Validaciones de seguridad - asegurar que todos los valores sean números válidos
+  const printerConsumption = Number(input.printerConsumption) || 0;
+  const hoursPerDay = Number(input.hoursPerDay) || 0;
+  const daysPerMonth = Number(input.daysPerMonth) || 0;
+  const energyCost = Number(input.energyCost) || 0;
+
+  // Validaciones de negocio
+  if (printerConsumption <= 0) {
+    throw new Error("El consumo de la impresora debe ser un número positivo");
+  }
+
+  if (hoursPerDay < 0 || hoursPerDay > 24) {
+    throw new Error("Las horas por día deben estar entre 0 y 24");
+  }
+
+  if (daysPerMonth < 0 || daysPerMonth > 31) {
+    throw new Error("Los días por mes deben estar entre 0 y 31");
+  }
+
+  if (energyCost <= 0) {
+    throw new Error("El costo de energía debe ser un número positivo");
+  }
+
+  try {
+    // Cálculo del consumo diario en kWh
+    const dailyConsumption = printerConsumption * hoursPerDay;
+
+    // Cálculo del consumo mensual y anual
+    const monthlyConsumption = dailyConsumption * daysPerMonth;
+    const yearlyConsumption = monthlyConsumption * 12;
+
+    // Cálculo de costos
+    const dailyCost = dailyConsumption * energyCost;
+    const monthlyCost = monthlyConsumption * energyCost;
+    const yearlyCost = yearlyConsumption * energyCost;
+
+    return {
+      dailyConsumption: parseFloat(dailyConsumption.toFixed(2)),
+      monthlyConsumption: parseFloat(monthlyConsumption.toFixed(2)),
+      yearlyConsumption: parseFloat(yearlyConsumption.toFixed(2)),
+      dailyCost: parseFloat(dailyCost.toFixed(2)),
+      monthlyCost: parseFloat(monthlyCost.toFixed(2)),
+      yearlyCost: parseFloat(yearlyCost.toFixed(2)),
+    };
+  } catch (error) {
+    console.error("Error en el cálculo de kW:", error);
+    // Devolver valores predeterminados en caso de error para evitar undefined
+    return {
+      dailyConsumption: 0,
+      monthlyConsumption: 0,
+      yearlyConsumption: 0,
+      dailyCost: 0,
+      monthlyCost: 0,
+      yearlyCost: 0,
+    };
+  }
+}
+
+/**
+ * Obtiene los valores predeterminados para la calculadora de kW
+ * @returns Valores predeterminados para el formulario de kW
+ */
+export async function getDefaultKwCalculatorValues(): Promise<KwCalculatorInput> {
+  return {
+    printerName: "Ender 3",
+    printerConsumption: 0.36, // kW
+    hoursPerDay: 8,
+    energyCost: 80, // ARS/kWh (tarifa aproximada en Argentina)
+    daysPerMonth: 20,
   };
 }

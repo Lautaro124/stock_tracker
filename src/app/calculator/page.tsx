@@ -185,10 +185,10 @@ export default function CalculatorPage() {
           </div>
           <div>
             <Link
-              href="/dashboard"
+              href="/projects"
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
             >
-              Volver al Dashboard
+              Volver al projectos
             </Link>
           </div>
         </header>

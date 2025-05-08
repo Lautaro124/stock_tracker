@@ -66,6 +66,12 @@ export default async function DashboardPage({
             >
               Ver Proyectos
             </Link>
+            <Link
+              href="/calculator"
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors"
+            >
+              Calculadora de presupuesto
+            </Link>
             <form action={signOut}>
               <button
                 type="submit"

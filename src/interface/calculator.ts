@@ -56,3 +56,41 @@ export const MATERIAL_OPTIONS: MaterialOption[] = [
   { id: "nylon", name: "Nylon", density: 1.1, defaultPrice: 30 },
   { id: "resin", name: "Resina", density: 1.1, defaultPrice: 35 },
 ];
+
+// Interfaces para la calculadora de kW
+export interface KwCalculatorInput {
+  // Datos de la impresora
+  printerName: string;
+  printerConsumption: number; // Consumo en kW
+  hoursPerDay: number;
+  // Datos de tarifa eléctrica
+  energyCost: number; // Costo por kWh (en ARS)
+  // Horas de uso
+  daysPerMonth: number;
+}
+
+export interface KwCalculatorResult {
+  // Consumo energético
+  dailyConsumption: number; // kWh por día
+  monthlyConsumption: number; // kWh por mes
+  yearlyConsumption: number; // kWh por año
+
+  // Costos
+  dailyCost: number; // Costo por día (en ARS)
+  monthlyCost: number; // Costo por mes (en ARS)
+  yearlyCost: number; // Costo por año (en ARS)
+}
+
+// Impresoras 3D populares con sus consumos típicos
+export const COMMON_PRINTERS = [
+  { id: "ender3", name: "Ender 3", consumption: 0.36 },
+  { id: "ender3pro", name: "Ender 3 Pro", consumption: 0.35 },
+  { id: "ender3v2", name: "Ender 3 v2", consumption: 0.35 },
+  { id: "ender5", name: "Ender 5", consumption: 0.37 },
+  { id: "prusai3", name: "Prusa i3 MK3S+", consumption: 0.12 },
+  { id: "artillery", name: "Artillery Sidewinder X1", consumption: 0.35 },
+  { id: "cr10", name: "Creality CR-10", consumption: 0.35 },
+  { id: "cr10s", name: "Creality CR-10S", consumption: 0.41 },
+  { id: "anycubic", name: "Anycubic i3 Mega", consumption: 0.25 },
+  { id: "custom", name: "Personalizado", consumption: 0.35 },
+];
