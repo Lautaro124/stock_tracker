@@ -45,6 +45,7 @@ export default function ManageUsersModal({
     if (isOpen) {
       loadUsers();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, projectId]);
 
   async function loadUsers() {
@@ -80,7 +81,7 @@ export default function ManageUsersModal({
       if (result.error) {
         setErrorMessage(result.error);
       } else {
-        setSuccessMessage(result.success);
+        setSuccessMessage(result.success ?? null);
         // Limpiar el campo del formulario
         const inputElement = document.getElementById(
           "email"
@@ -112,7 +113,7 @@ export default function ManageUsersModal({
       if (result.error) {
         setErrorMessage(result.error);
       } else {
-        setSuccessMessage(result.success);
+        setSuccessMessage(result.success ?? null);
         await loadUsers(); // Actualizar la lista de usuarios
       }
     } catch (error) {

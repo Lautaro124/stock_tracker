@@ -162,7 +162,7 @@ export async function addUserToProject(projectId: number, email: string) {
 
   try {
     // Crear un registro de invitación en una tabla separada
-    const { data: invitation, error: invitationError } = await supabase
+    const { error: invitationError } = await supabase
       .from("Project_invitations")
       .insert({
         project_id: projectId,
