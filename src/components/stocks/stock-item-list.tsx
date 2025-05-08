@@ -101,7 +101,7 @@ export default function StockItemList({
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                 >
-                  Pedidos
+                  Ventas
                 </th>
                 <th
                   scope="col"
@@ -109,8 +109,11 @@ export default function StockItemList({
                 >
                   Notas
                 </th>
-                <th scope="col" className="relative px-6 py-3">
-                  <span className="sr-only">Acciones</span>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                >
+                  Acciones
                 </th>
               </tr>
             </thead>

@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 };
 
 interface ProjectsPageProps {
-  searchParams: {
+  searchParams?: Promise<{
     id?: string;
-  };
+  }>;
 }
 
 export default async function ProjectsPage({
@@ -23,8 +23,9 @@ export default async function ProjectsPage({
 }: ProjectsPageProps) {
   const { projects, error } = await getUserProjects();
 
-  const currentProjectId = searchParams.id
-    ? parseInt(searchParams.id)
+  const param = await searchParams;
+  const currentProjectId = param?.id
+    ? parseInt(param.id ?? "")
     : undefined;
 
   if (
