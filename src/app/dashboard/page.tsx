@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getCurrentProject } from "@/lib/actions/project-actions";
 import { getStockItems } from "@/lib/actions/stock-actions";
 import StockItemList from "@/components/stocks/stock-item-list";
+import ManageProjectUsers from "@/components/projects/manage-project-users";
 
 export const metadata: Metadata = {
   title: "Dashboard | Stock Tracker",
@@ -59,7 +60,7 @@ export default async function DashboardPage({
               Bienvenido a tu panel de control
             </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             <Link
               href="/projects"
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
@@ -71,6 +72,12 @@ export default async function DashboardPage({
               className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors"
             >
               Calculadora de presupuesto
+            </Link>
+            <Link
+              href="/kw_calculator"
+              className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-md transition-colors"
+            >
+              Calculadora de KW
             </Link>
             <form action={signOut}>
               <button
@@ -94,6 +101,10 @@ export default async function DashboardPage({
                   Proyecto #{selectedProject.id}
                 </p>
               </div>
+              <ManageProjectUsers
+                projectId={selectedProject.id}
+                projectName={selectedProject.name}
+              />
             </div>
 
             <StockItemList stocks={stockItems} projectId={selectedProject.id} />
