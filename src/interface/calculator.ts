@@ -1,12 +1,8 @@
 export interface CalculatorInput {
-  // Dimensiones de la pieza en mm
-  height: number;
-  width: number;
-  depth: number;
+  // Cantidad de filamento en gramos
+  filamentWeight: number;
   // Volumen real en cm³ (opcional, se calcula si no se proporciona)
   volume?: number;
-  // Densidad del material en g/cm³
-  density: number;
   // Precio del material por gramo (en ARS)
   materialPrice: number;
   // Porcentaje de relleno (infill) (0-100)

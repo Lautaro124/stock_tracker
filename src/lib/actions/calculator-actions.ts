@@ -16,8 +16,8 @@ export async function calculateBudget(
   input: CalculatorInput
 ): Promise<CalculatorResult> {
   // Validaciones
-  if (input.height <= 0 || input.width <= 0 || input.depth <= 0) {
-    throw new Error("Las dimensiones deben ser números positivos");
+  if (input.filamentWeight <= 0) {
+    throw new Error("El peso del filamento debe ser un número positivo");
   }
 
   if (input.infillPercentage < 0 || input.infillPercentage > 100) {
@@ -28,20 +28,19 @@ export async function calculateBudget(
     throw new Error("El margen de beneficio no puede ser negativo");
   }
 
-  if (input.density <= 0 || input.materialPrice <= 0) {
-    throw new Error("La densidad y el precio del material deben ser positivos");
+  if (input.materialPrice <= 0) {
+    throw new Error("El precio del material debe ser positivo");
   }
-
-  // Cálculo del volumen si no se proporciona
-  const volumeCm3 =
-    input.volume || (input.height * input.width * input.depth) / 1000; // convertir mm³ a cm³
 
   // Tiempo total de impresión en horas
   const printTimeTotal = input.printTimeHours + input.printTimeMinutes / 60;
 
-  // Cálculo del peso: volumen × densidad × porcentaje de relleno
-  const infillFactor = input.infillPercentage / 100;
-  const weight = volumeCm3 * input.density * infillFactor;
+  // Usamos directamente el peso del filamento
+  const weight = input.filamentWeight;
+
+  // Estimación de volumen basada en el peso y una densidad promedio de 1.25 g/cm³
+  // Solo si es necesario y no se proporciona
+  const volumeCm3 = input.volume || weight / 1.25;
 
   // Desglose de costes
   const materialCost = weight * input.materialPrice;
@@ -74,11 +73,8 @@ export async function calculateBudget(
  */
 export async function getDefaultCalculatorValues(): Promise<CalculatorInput> {
   return {
-    height: 100,
-    width: 100,
-    depth: 100,
-    density: 1.24, // PLA por defecto
-    materialPrice: 15, // ARS/g
+    filamentWeight: 50, // Peso de filamento en gramos
+    materialPrice: 0.015, // ARS/g (15 ARS/kg)
     infillPercentage: 20,
     printTimeHours: 2,
     printTimeMinutes: 30,

@@ -14,11 +14,8 @@ import Link from "next/link";
 
 export default function CalculatorPage() {
   const [input, setInput] = useState<CalculatorInput>({
-    height: 100,
-    width: 100,
-    depth: 100,
-    density: 1.24,
-    materialPrice: 0.02,
+    filamentWeight: 50,
+    materialPrice: 0.015,
     infillPercentage: 20,
     printTimeHours: 2,
     printTimeMinutes: 30,
@@ -49,16 +46,15 @@ export default function CalculatorPage() {
     loadDefaults();
   }, []);
 
-  // Actualizar densidad y precio cuando cambie el material
+  // Actualizar precio cuando cambie el material
   useEffect(() => {
     const material = MATERIAL_OPTIONS.find((m) => m.id === selectedMaterial);
     if (material) {
       setInput((prev) => ({
         ...prev,
-        density: material.density,
-        materialPrice: material.defaultPrice,
+        materialPrice: material.defaultPrice / 1000,
       }));
-      setMaterialPricePerKg(material.defaultPrice * 1000);
+      setMaterialPricePerKg(material.defaultPrice);
     }
   }, [selectedMaterial]);
 
@@ -68,10 +64,7 @@ export default function CalculatorPage() {
       if (
         value <= 0 &&
         [
-          "height",
-          "width",
-          "depth",
-          "density",
+          "filamentWeight",
           "materialPrice",
           "energyCost",
           "printerConsumption",
@@ -218,65 +211,35 @@ export default function CalculatorPage() {
                 >
                   {MATERIAL_OPTIONS.map((material) => (
                     <option key={material.id} value={material.id}>
-                      {material.name} ({material.density} g/cm³)
+                      {material.name}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Dimensiones */}
+              {/* Peso del filamento */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Altura (mm)
+                  Peso del filamento (g)
                 </label>
                 <input
                   type="number"
-                  name="height"
-                  value={input.height}
+                  name="filamentWeight"
+                  value={input.filamentWeight}
                   onChange={handleChange}
+                  step="0.1"
                   className={`w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 ${
-                    errors.height ? "border-red-500" : ""
+                    errors.filamentWeight ? "border-red-500" : ""
                   }`}
                 />
-                {errors.height && (
-                  <p className="text-red-500 text-xs mt-1">{errors.height}</p>
+                {errors.filamentWeight && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.filamentWeight}
+                  </p>
                 )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Anchura (mm)
-                </label>
-                <input
-                  type="number"
-                  name="width"
-                  value={input.width}
-                  onChange={handleChange}
-                  className={`w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 ${
-                    errors.width ? "border-red-500" : ""
-                  }`}
-                />
-                {errors.width && (
-                  <p className="text-red-500 text-xs mt-1">{errors.width}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Profundidad (mm)
-                </label>
-                <input
-                  type="number"
-                  name="depth"
-                  value={input.depth}
-                  onChange={handleChange}
-                  className={`w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 ${
-                    errors.depth ? "border-red-500" : ""
-                  }`}
-                />
-                {errors.depth && (
-                  <p className="text-red-500 text-xs mt-1">{errors.depth}</p>
-                )}
+                <p className="text-xs text-gray-500 mt-1">
+                  El peso estimado según el slicer
+                </p>
               </div>
 
               <div>
@@ -297,25 +260,6 @@ export default function CalculatorPage() {
               </div>
 
               {/* Material properties */}
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Densidad (g/cm³)
-                </label>
-                <input
-                  type="number"
-                  name="density"
-                  value={input.density}
-                  onChange={handleChange}
-                  step="0.01"
-                  className={`w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 ${
-                    errors.density ? "border-red-500" : ""
-                  }`}
-                />
-                {errors.density && (
-                  <p className="text-red-500 text-xs mt-1">{errors.density}</p>
-                )}
-              </div>
-
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Precio material (ARS/kg)
