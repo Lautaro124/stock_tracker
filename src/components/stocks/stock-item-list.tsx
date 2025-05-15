@@ -69,83 +69,49 @@ export default function StockItemList({
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                >
-                  Producto
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                >
-                  Cantidad
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                >
-                  Stock Actual
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                >
-                  Valor
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                >
-                  Mínimo
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                >
-                  Ventas
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                >
-                  Notas
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                >
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-              {sortedStocks.map((item) => (
-                <tr key={item.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">
-                      {item.product_name}
+        <>
+          {/* Vista para móviles (tarjetas) */}
+          <div className="md:hidden grid grid-cols-1 gap-4">
+            {sortedStocks.map((item) => (
+              <div
+                key={item.id}
+                className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-700"
+              >
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="text-md font-medium text-gray-900 dark:text-white">
+                    {item.product_name}
+                  </h4>
+                  <button
+                    onClick={() => setEditingStock(item)}
+                    className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    Editar
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    Cantidad:
+                  </div>
+                  <div className="flex items-center justify-end">
+                    <div
+                      className={`text-sm ${
+                        item.quantity <= item.min_quantity
+                          ? "text-red-600 dark:text-red-400 font-medium"
+                          : "text-gray-900 dark:text-white"
+                      }`}
+                    >
+                      {item.quantity.toLocaleString()}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex flex-col items-center">
-                      <div
-                        className={`text-sm ${
-                          item.quantity <= item.min_quantity
-                            ? "text-red-600 dark:text-red-400 font-medium"
-                            : "text-gray-900 dark:text-white"
-                        }`}
-                      >
-                        {item.quantity.toLocaleString()}
-                      </div>
+                    <div className="ml-2">
                       <QuickActionButtons stockItem={item} field="quantity" />
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  </div>
+
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    Stock Actual:
+                  </div>
+                  <div className="text-right">
                     <div
                       className={`text-sm ${
                         item.quantity - item.orders <= item.min_quantity
@@ -155,43 +121,174 @@ export default function StockItemList({
                     >
                       {(item.quantity - item.orders).toLocaleString()}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  </div>
+
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    Valor:
+                  </div>
+                  <div className="text-sm text-gray-900 dark:text-white text-right">
+                    {item.product_value.toLocaleString()} €
+                  </div>
+
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    Mínimo:
+                  </div>
+                  <div className="text-sm text-gray-900 dark:text-white text-right">
+                    {item.min_quantity.toLocaleString()}
+                  </div>
+
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    Ventas:
+                  </div>
+                  <div className="flex items-center justify-end">
                     <div className="text-sm text-gray-900 dark:text-white">
-                      {item.product_value.toLocaleString()} €
+                      {item.orders.toLocaleString()}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900 dark:text-white">
-                      {item.min_quantity.toLocaleString()}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex flex-col items-center">
-                      <div className="text-sm text-gray-900 dark:text-white">
-                        {item.orders.toLocaleString()}
-                      </div>
+                    <div className="ml-2">
                       <QuickActionButtons stockItem={item} field="orders" />
                     </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">
+                  </div>
+                </div>
+
+                {item.notes && (
+                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                      Notas:
+                    </div>
+                    <div className="text-sm text-gray-700 dark:text-gray-300">
                       {item.notes || "-"}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      onClick={() => setEditingStock(item)}
-                      className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
-                    >
-                      Editar
-                    </button>
-                  </td>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Vista para tablets y escritorio (tabla) */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Producto
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Cantidad
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Stock Actual
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Valor
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Mínimo
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Ventas
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Notas
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Acciones
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                {sortedStocks.map((item) => (
+                  <tr key={item.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        {item.product_name}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-col items-center">
+                        <div
+                          className={`text-sm ${
+                            item.quantity <= item.min_quantity
+                              ? "text-red-600 dark:text-red-400 font-medium"
+                              : "text-gray-900 dark:text-white"
+                          }`}
+                        >
+                          {item.quantity.toLocaleString()}
+                        </div>
+                        <QuickActionButtons stockItem={item} field="quantity" />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div
+                        className={`text-sm ${
+                          item.quantity - item.orders <= item.min_quantity
+                            ? "text-red-600 dark:text-red-400 font-medium"
+                            : "text-gray-900 dark:text-white"
+                        }`}
+                      >
+                        {(item.quantity - item.orders).toLocaleString()}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900 dark:text-white">
+                        {item.product_value.toLocaleString()} €
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900 dark:text-white">
+                        {item.min_quantity.toLocaleString()}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-col items-center">
+                        <div className="text-sm text-gray-900 dark:text-white">
+                          {item.orders.toLocaleString()}
+                        </div>
+                        <QuickActionButtons stockItem={item} field="orders" />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">
+                        {item.notes || "-"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => setEditingStock(item)}
+                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
+                      >
+                        Editar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {isCreateModalOpen && (
