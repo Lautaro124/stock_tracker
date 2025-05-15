@@ -7,9 +7,14 @@ import { quickUpdateStockItem } from "@/lib/actions/stock-actions";
 interface QuickActionButtonsProps {
   stockItem: StockItem;
   field: "quantity" | "orders";
+  isMobile?: boolean;
 }
 
-const QuickActionButtons = ({ stockItem, field }: QuickActionButtonsProps) => {
+const QuickActionButtons = ({
+  stockItem,
+  field,
+  isMobile = false,
+}: QuickActionButtonsProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleUpdate = async (value: number) => {
@@ -37,12 +42,16 @@ const QuickActionButtons = ({ stockItem, field }: QuickActionButtonsProps) => {
           (field === "quantity" && stockItem.quantity <= 0) ||
           (field === "orders" && stockItem.orders <= 0)
         }
-        className="p-1 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+        className={`rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed ${
+          isMobile ? "p-2" : "p-1"
+        }`}
         title={field === "quantity" ? "Reducir stock" : "Reducir pedidos"}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-3.5 w-3.5 text-gray-700 dark:text-gray-300"
+          className={`${
+            isMobile ? "h-4 w-4" : "h-3.5 w-3.5"
+          } text-gray-700 dark:text-gray-300`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -55,15 +64,24 @@ const QuickActionButtons = ({ stockItem, field }: QuickActionButtonsProps) => {
           />
         </svg>
       </button>
+      <span className={`text-sm font-medium px-1 ${isMobile ? "mx-1" : ""}`}>
+        {field === "quantity"
+          ? stockItem.quantity.toLocaleString()
+          : stockItem.orders.toLocaleString()}
+      </span>
       <button
         onClick={() => handleUpdate(1)}
         disabled={isUpdating}
-        className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
+        className={`rounded-full bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed ${
+          isMobile ? "p-2" : "p-1"
+        }`}
         title={field === "quantity" ? "Aumentar stock" : "Aumentar pedidos"}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-3.5 w-3.5 text-blue-700 dark:text-blue-300"
+          className={`${
+            isMobile ? "h-4 w-4" : "h-3.5 w-3.5"
+          } text-blue-700 dark:text-blue-300`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
