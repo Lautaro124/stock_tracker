@@ -100,3 +100,45 @@ export async function updateStockItem({
   revalidatePath(`/dashboard?projectId=${project_id}`);
   return data;
 }
+
+export async function quickUpdateStockItem({
+  id,
+  project_id,
+  field,
+  value,
+}: {
+  id: number;
+  project_id: number;
+  field: "quantity" | "orders";
+  value: number;
+}) {
+  const supabase = await createClient();
+
+  // Primero obtenemos el item actual para tener todos los valores
+  const { data: currentItem, error: fetchError } = await supabase
+    .from("stock_item")
+    .select()
+    .eq("id", id)
+    .single();
+
+  if (fetchError) {
+    throw new Error(fetchError.message);
+  }
+
+  // Actualizamos solo el campo específico
+  const { data, error } = await supabase
+    .from("stock_item")
+    .update({
+      [field]: Math.max(0, currentItem[field] + value), // Aseguramos que no sea negativo
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath(`/dashboard?projectId=${project_id}`);
+  return data;
+}

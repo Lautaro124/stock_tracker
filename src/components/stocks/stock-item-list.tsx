@@ -3,6 +3,7 @@
 import { useState } from "react";
 import CreateStockModal from "./create-stock-modal";
 import EditStockModal from "./edit-stock-modal";
+import QuickActionButtons from "./quick-action-buttons";
 import { StockItem } from "@/interface/stock";
 
 interface StockItemListProps {
@@ -131,14 +132,17 @@ export default function StockItemList({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div
-                      className={`text-sm ${
-                        item.quantity <= item.min_quantity
-                          ? "text-red-600 dark:text-red-400 font-medium"
-                          : "text-gray-900 dark:text-white"
-                      }`}
-                    >
-                      {item.quantity.toLocaleString()}
+                    <div className="flex flex-col items-center">
+                      <div
+                        className={`text-sm ${
+                          item.quantity <= item.min_quantity
+                            ? "text-red-600 dark:text-red-400 font-medium"
+                            : "text-gray-900 dark:text-white"
+                        }`}
+                      >
+                        {item.quantity.toLocaleString()}
+                      </div>
+                      <QuickActionButtons stockItem={item} field="quantity" />
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -163,8 +167,11 @@ export default function StockItemList({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900 dark:text-white">
-                      {item.orders.toLocaleString()}
+                    <div className="flex flex-col items-center">
+                      <div className="text-sm text-gray-900 dark:text-white">
+                        {item.orders.toLocaleString()}
+                      </div>
+                      <QuickActionButtons stockItem={item} field="orders" />
                     </div>
                   </td>
                   <td className="px-6 py-4">
