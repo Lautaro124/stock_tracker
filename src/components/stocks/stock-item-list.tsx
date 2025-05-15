@@ -17,7 +17,6 @@ export default function StockItemList({
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingStock, setEditingStock] = useState<StockItem | null>(null);
 
-  // Ordenar stocks por nombre de producto
   const sortedStocks = [...stocks].sort((a, b) =>
     a.product_name.localeCompare(b.product_name)
   );
@@ -89,6 +88,12 @@ export default function StockItemList({
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                 >
+                  Stock Actual
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                >
                   Valor
                 </th>
                 <th
@@ -134,6 +139,17 @@ export default function StockItemList({
                       }`}
                     >
                       {item.quantity.toLocaleString()}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div
+                      className={`text-sm ${
+                        item.quantity - item.orders <= item.min_quantity
+                          ? "text-red-600 dark:text-red-400 font-medium"
+                          : "text-gray-900 dark:text-white"
+                      }`}
+                    >
+                      {(item.quantity - item.orders).toLocaleString()}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
